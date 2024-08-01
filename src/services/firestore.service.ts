@@ -14,7 +14,7 @@ import {
   query,
 } from '@firebase/firestore';
 
-import { db } from '@/lib/firebase/firebase';
+import { db } from '@/lib/firebase';
 import { PantryItem } from '@/models/PantryItem';
 
 export class FirestoreService {
@@ -30,10 +30,10 @@ export class FirestoreService {
         category: item.category,
         expirationDate: item.expirationDate,
         purchaseDate: item.purchaseDate,
-        imageURL: item.imageURL,
-        notes: item.notes,
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
+        imagePath: item.imagePath,
+        notes: item.notes,
       };
     },
     fromFirestore: (
@@ -50,10 +50,10 @@ export class FirestoreService {
           data.category,
           data.expirationDate.toDate(),
           data.purchaseDate.toDate(),
-          data.imageURL,
-          data.notes,
           data.createdAt,
-          data.updatedAt
+          data.updatedAt,
+          data.imagePath,
+          data.notes
         );
       }
     },
@@ -130,6 +130,13 @@ export class FirestoreService {
       throw new Error(`You are not authorized to delete this pantry item`);
     }
     //  confirmed (Delete the document)
+
+    // // Delete Item's Image in the Firebase Storage
+    // if (itemData?.imagePath) {
+    //   await
+    // }
+
+    // Delete Firestore Document
     await deleteDoc(docRef);
     console.log(`Item with id - {docRef.id} deleted successfully`);
     return docRef.id;

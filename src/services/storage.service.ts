@@ -22,7 +22,7 @@ export class StorageService {
     console.log('File Successfully Uploaded');
 
     // Get uploaded File's URL
-    return getDownloadURL(fileRef);
+    return fileRef.fullPath;
   }
 
   private async deleteFile(path: string): Promise<void> {
@@ -34,5 +34,17 @@ export class StorageService {
     console.log('File Deleted Successfully');
   }
   // uploadPantryItemImage
+  async uploadPantryItemImage(file: File, userId: string): Promise<string> {
+    return await this.uploadFile(file, `users/${userId}/pantry/`);
+  }
+
   // deletePantryItemImage
+  async deletePantryItemImage(imagePath: string): Promise<void> {
+    return await this.deleteFile(imagePath);
+  }
+  // getImageURL
+  async getImageURL(imagePath: string): Promise<string> {
+    const fileRef = ref(this.storage, imagePath);
+    return await getDownloadURL(fileRef);
+  }
 }
