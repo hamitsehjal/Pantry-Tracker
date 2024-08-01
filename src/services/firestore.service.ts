@@ -4,21 +4,67 @@ import {
   serverTimestamp,
   updateDoc,
   doc,
+  getDoc,
+  FirestoreDataConverter,
+  QueryDocumentSnapshot,
+  SnapshotOptions,
+  deleteDoc,
 } from '@firebase/firestore';
 
 import { db } from '@/lib/firebase/firebase';
 import { PantryItem } from '@/models/PantryItem';
 
 export class FirestoreService {
-  private pantryCollection = collection(db, 'pantry');
-
+  private pantryCollection = collection(db, 'pantry').withConverter();
+  // Firestore data convertor
+  private pantryItemConvertor: FirestoreDataConverter<PantryItem> = {
+    toFirestore: (item: PantryItem) => {
+      return {
+        userId: item.userId,
+        name: item.name,
+        quantity: item.quantity,
+        unit: item.unit,
+        category: item.category,
+        expirationDate: item.expirationDate,
+        purchaseDate: item.purchaseDate,
+        imageURL: item.imageURL,
+        notes: item.notes,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+      };
+    },
+    fromFirestore: (
+      snapshot: QueryDocumentSnapshot,
+      options: SnapshotOptions
+    ) => {
+      const data = snapshot.data(options);
+      {
+        return new PantryItem(
+          data.userId,
+          data.name,
+          data.quantity,
+          data.unit,
+          data.category,
+          data.expirationDate.toDate(),
+          data.purchaseDate.toDate(),
+          data.imageURL,
+          data.notes,
+          data.createdAt,
+          data.updatedAt
+        );
+      }
+    },
+  };
   // add a new item
   async addItem(item: PantryItem): Promise<string> {
-    const docRef = await addDoc(this.pantryCollection, {
-      ...item.toFirestore(),
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
+    const docRef = await addDoc(
+      this.pantryCollection.withConverter(this.pantryItemConvertor),
+      {
+        ...item,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      }
+    );
     console.log(`New Item Added Successfully - {docRef.id}`);
     return docRef.id;
   }
@@ -26,11 +72,14 @@ export class FirestoreService {
   // update an existing item
   async updateItem(itemId: string, item: PantryItem): Promise<string> {
     // Get a reference to the Document
-    const docRef = doc(this.pantryCollection, itemId);
+    const docRef = doc(
+      this.pantryCollection.withConverter(this.pantryItemConvertor),
+      itemId
+    );
 
     // Update the document
     await updateDoc(docRef, {
-      ...item.toFirestore(),
+      ...item,
       updatedAt: serverTimestamp(),
     });
 
@@ -43,4 +92,21 @@ export class FirestoreService {
   // retrieve multiple item
 
   // Delete an item
+  async deleteItem(itemId: string, user: string): Promise<string> {
+    // Verify item ownership
+    const docRef = doc(
+      this.pantryCollection.withConverter(this.pantryItemConvertor),
+      itemId
+    );
+    const itemToBeDeleted = await getDoc(docRef);
+
+    const itemData = itemToBeDeleted.data();
+    if (itemData && itemData.userId !== user) {
+      throw new Error(`You are not authorized to delete this pantry item`);
+    }
+    //  confirmed (Delete the document)
+    await deleteDoc(docRef);
+    console.log(`Item with id - {docRef.id} deleted successfully`);
+    return docRef.id;
+  }
 }
