@@ -9,13 +9,16 @@ import {
   QueryDocumentSnapshot,
   SnapshotOptions,
   deleteDoc,
+  where,
+  getDocs,
+  query,
 } from '@firebase/firestore';
 
 import { db } from '@/lib/firebase/firebase';
 import { PantryItem } from '@/models/PantryItem';
 
 export class FirestoreService {
-  private pantryCollection = collection(db, 'pantry').withConverter();
+  private pantryCollection = collection(db, 'pantry');
   // Firestore data convertor
   private pantryItemConvertor: FirestoreDataConverter<PantryItem> = {
     toFirestore: (item: PantryItem) => {
@@ -88,8 +91,30 @@ export class FirestoreService {
   }
 
   // retrieve a pantry item
+  async getItem(itemId: string): Promise<PantryItem | null> {
+    const docRef = doc(
+      this.pantryCollection.withConverter(this.pantryItemConvertor),
+      itemId
+    );
+    const itemRetrieved = await getDoc(docRef);
+    if (itemRetrieved.exists()) {
+      return itemRetrieved.data();
+    }
+    return null; // item no found
+  }
 
-  // retrieve multiple item
+  // retrieve all pantry item for user
+  async getAllItems(userId: string): Promise<PantryItem[]> {
+    const queryAllItemsForUser = query(
+      this.pantryCollection.withConverter(this.pantryItemConvertor),
+      where('userId', '==', userId)
+    );
+
+    const querySnapshot = await getDocs(queryAllItemsForUser);
+    const pantryItems = querySnapshot.docs.map((doc) => doc.data());
+    console.log(`List of Items retrieved: {pantryItems}`);
+    return pantryItems;
+  }
 
   // Delete an item
   async deleteItem(itemId: string, user: string): Promise<string> {
