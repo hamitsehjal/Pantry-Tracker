@@ -12,6 +12,11 @@ import {
   where,
   getDocs,
   deleteDoc,
+  Timestamp,
+  FieldValue,
+  FirestoreDataConverter,
+  QueryDocumentSnapshot,
+  DocumentReference,
 } from '@firebase/firestore';
 
 import app from '@/lib/firebase/firebase';
@@ -39,12 +44,12 @@ class PantryItem {
   quantity: number;
   unit: Unit;
   category: Category;
-  expirationDate: Date;
-  purchaseDate: Date;
+  expirationDate: Timestamp;
+  purchaseDate: Timestamp;
   imageURL: string;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
   notes?: string;
-  createdAt: Date;
-  updatedAt: Date;
 
   constructor(
     userId: string,
@@ -64,26 +69,29 @@ class PantryItem {
     this.quantity = quantity;
     this.unit = unit;
     this.category = category;
-    this.expirationDate = expirationDate;
-    this.purchaseDate = purchaseDate;
+    this.expirationDate = Timestamp.fromDate(expirationDate);
+    this.purchaseDate = Timestamp.fromDate(purchaseDate);
     this.imageURL = imageURL;
+    this.createdAt = Timestamp.fromDate(new Date());
+    this.updatedAt = Timestamp.fromDate(new Date());
     this.notes = notes;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
   }
 }
 
 // Add a pantry item
-async function addPantryItem(item: PantryItem) {
-  const itemToAdd = {
+async function addPantryItem(
+  item: PantryItem
+): Promise<DocumentReference<PantryItem>> {
+  const docRef = doc(db, 'pantryItems').withConverter(pantryItemConvertor);
+  const itemAdded = await setDoc(docRef, {
     ...item,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
-  };
-  const docRef = doc(db, 'pantryItems').withConverter(pantryItemConvertor);
-  const itemAdded = await setDoc(docRef, itemToAdd);
+  });
 
   console.log(`New Item added to Pantry: ${docRef.id}`);
+
+  return docRef;
 }
 
 // Update a pantry item
@@ -101,7 +109,7 @@ async function updatePantryItem(itemId: string, item: PantryItem) {
 }
 
 // Retrieve a pantry item
-async function getPantryItem(itemId: string) {
+async function getPantryItem(itemId: string): Promise<PantryItem> {
   const docRef = doc(db, 'pantryItems', itemId).withConverter(
     pantryItemConvertor
   );
@@ -111,7 +119,7 @@ async function getPantryItem(itemId: string) {
   if (itemRetrieved.exists()) {
     return itemRetrieved;
   } else {
-    return `No Item Exists for {itemId}`;
+    // return `No Item Exists for {itemId}`;
   }
 }
 
@@ -150,7 +158,7 @@ const db = getFirestore(app);
 export default db;
 
 // Firestore data convertor
-const pantryItemConvertor = {
+const pantryItemConvertor: FirestoreDataConverter<PantryItem> = {
   toFirestore: (item: PantryItem) => {
     return {
       userId: item.userId,
@@ -166,23 +174,25 @@ const pantryItemConvertor = {
       updatedAt: item.updatedAt,
     };
   },
-  fromFirestore: (snapshot: DocumentSnapshot, options: SnapshotOptions) => {
+  fromFirestore: (
+    snapshot: QueryDocumentSnapshot,
+    options: SnapshotOptions
+  ) => {
     const data = snapshot.data(options);
-    if (snapshot.exists() && data) {
+    {
       return new PantryItem(
         data.userId,
         data.name,
         data.quantity,
         data.unit,
         data.category,
-        data.expirationDate,
-        data.purchaseDate,
+        data.expirationDate.toDate(),
+        data.purchaseDate.toDate(),
         data.imageURL,
         data.notes,
         data.createdAt,
         data.updatedAt
       );
     }
-    return null;
   },
 };
