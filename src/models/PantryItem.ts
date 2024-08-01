@@ -1,11 +1,3 @@
-import {
-  DocumentSnapshot,
-  QueryDocumentSnapshot,
-  SnapshotOptions,
-  Timestamp,
-  FirestoreDataConverter,
-} from '@firebase/firestore';
-
 enum Category {
   Vegetable = 'Vegetable',
   Fruit = 'Fruit',
