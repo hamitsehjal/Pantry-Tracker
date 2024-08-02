@@ -1,4 +1,4 @@
-enum Category {
+export enum Category {
   Vegetable = 'Vegetable',
   Fruit = 'Fruit',
   Dairy = 'Dairy',
@@ -7,7 +7,7 @@ enum Category {
   Grain = 'Grain',
   Condiment = 'Condiment',
 }
-enum Unit {
+export enum Unit {
   Kilogram = 'kg',
   Gram = 'g',
   Liter = 'l',
@@ -23,8 +23,8 @@ export class PantryItem {
     public category: Category,
     public expirationDate: Date,
     public purchaseDate: Date,
-    public createdAt: Date = new Date(),
-    public updatedAt: Date = new Date(),
+    public createdAt: Date,
+    public updatedAt: Date,
     public imagePath?: string,
     public notes?: string
   ) {}
