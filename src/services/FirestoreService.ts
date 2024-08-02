@@ -117,24 +117,11 @@ export class FirestoreService {
   }
 
   // Delete an item
-  async deleteItem(itemId: string, user: string): Promise<string> {
-    // Verify item ownership
+  async deleteItem(itemId: string): Promise<string> {
     const docRef = doc(
       this.pantryCollection.withConverter(this.pantryItemConvertor),
       itemId
     );
-    const itemToBeDeleted = await getDoc(docRef);
-
-    const itemData = itemToBeDeleted.data();
-    if (itemData && itemData.userId !== user) {
-      throw new Error(`You are not authorized to delete this pantry item`);
-    }
-    //  confirmed (Delete the document)
-
-    // // Delete Item's Image in the Firebase Storage
-    // if (itemData?.imagePath) {
-    //   await
-    // }
 
     // Delete Firestore Document
     await deleteDoc(docRef);
