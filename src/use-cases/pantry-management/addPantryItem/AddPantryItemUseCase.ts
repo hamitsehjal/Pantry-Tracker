@@ -1,7 +1,7 @@
 import { StorageService } from '@/services/StorageService';
 import { FirestoreService } from '@/services/FirestoreService';
 import { Category, PantryItem, Unit } from '@/models/PantryItem';
-import AddPantryItemContract from '@/use-cases/pantry-management/addPantryItem/AddPantryItemContract';
+import AddPantryItemContract from '@/use-cases/pantry-management/addPantryItem/contracts/AddPantryItemContract';
 import ValidatorService from '@/services/ValidatorService';
 
 export class AddPantryItemUseCase {
