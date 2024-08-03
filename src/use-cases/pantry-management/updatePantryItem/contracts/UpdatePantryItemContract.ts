@@ -7,6 +7,5 @@ export default interface UpdatePantryItemContract {
   category?: string;
   expirationDate?: Date;
   purchaseDate?: Date;
-  itemImage?: File;
   notes?: string;
 }

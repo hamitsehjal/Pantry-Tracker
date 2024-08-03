@@ -3,6 +3,7 @@ import { StorageService } from '@/services/StorageService';
 import ValidatorService from '@/services/ValidatorService';
 import UpdatePantryItemContract from '@/use-cases/pantry-management/updatePantryItem/contracts/UpdatePantryItemContract';
 import { Category, PantryItem, Unit } from '@/models/PantryItem';
+import { categoryToImageMap } from '@/use-cases/pantry-management/addPantryItem/AddPantryItemUseCase';
 
 export class UpdatePantryItemUseCase {
   // constructor
@@ -19,18 +20,20 @@ export class UpdatePantryItemUseCase {
       throw new Error(`No existing pantry item with id: ${item.itemId}`);
     }
     this.validate(item);
-    if (item.itemImage) {
-      // Delete existing image if it exists
+    // if (item.itemImage) {
+    //   // Delete existing image if it exists
+    //
+    //   if (pantryItem.imagePath) {
+    //     await this.storageService.deletePantryItemImage(pantryItem.imagePath);
+    //   }
+    //   // Upload new version of Image
+    //   pantryItem.imagePath = await this.storageService.uploadPantryItemImage(
+    //     item.itemImage,
+    //     item.userId
+    //   );
+    // }
+    pantryItem.imagePath = categoryToImageMap.get(item.category as Category)!;
 
-      if (pantryItem.imagePath) {
-        await this.storageService.deletePantryItemImage(pantryItem.imagePath);
-      }
-      // Upload new version of Image
-      pantryItem.imagePath = await this.storageService.uploadPantryItemImage(
-        item.itemImage,
-        item.userId
-      );
-    }
     // Updated PantryItem
     const updatedPantryItem = new PantryItem(
       item.userId,

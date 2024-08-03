@@ -19,10 +19,8 @@ export class GetPantryItemsUseCase {
 
     const pantryItemsWithImageURL: PantryItemResponse[] = [];
     for (const item of retrievedItems) {
-      let imageURL: string = 'shared_assets';
-      if (item.imagePath) {
-        imageURL = await this.storageService.getImageURL(item.imagePath);
-      }
+      const imageURL = await this.storageService.getImageURL(item.imagePath);
+
       const pantryItem = new PantryItemResponse(item, imageURL);
       pantryItemsWithImageURL.push(pantryItem);
     }

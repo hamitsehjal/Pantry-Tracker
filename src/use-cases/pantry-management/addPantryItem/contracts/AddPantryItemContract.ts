@@ -6,6 +6,5 @@ export default interface AddPantryItemContract {
   category: string;
   expirationDate: Date;
   purchaseDate: Date;
-  itemImage?: File;
   notes?: string;
 }
