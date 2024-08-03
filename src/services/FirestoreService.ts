@@ -12,10 +12,22 @@ import {
   where,
   getDocs,
   query,
+  orderBy,
+  QueryOrderByConstraint,
+  QueryFieldFilterConstraint,
 } from '@firebase/firestore';
 
 import { db } from '@/lib/firebase';
-import { PantryItem } from '@/models/PantryItem';
+import { Category, PantryItem } from '@/models/PantryItem';
+
+interface GetAllOptions {
+  userId: string;
+  category?: Category;
+  orderBy?: Array<{
+    field: 'name' | 'expirationDate' | 'purchaseDate' | 'quantity';
+    direction: 'asc' | 'desc';
+  }>;
+}
 
 export class FirestoreService {
   private pantryCollection = collection(db, 'pantry');
@@ -104,10 +116,25 @@ export class FirestoreService {
   }
 
   // retrieve all pantry item for user
-  async getAllItems(userId: string): Promise<PantryItem[]> {
+  async getAllItems(options: GetAllOptions): Promise<PantryItem[]> {
+    const whereClauses: QueryFieldFilterConstraint[] = [
+      where('userId', '==', options.userId),
+    ];
+    const sortClauses: QueryOrderByConstraint[] = [];
+    // Optional properties
+    options.category &&
+      whereClauses.push(where('category', '==', options.category));
+
+    if (options.orderBy) {
+      for (const sortingMethod of options.orderBy) {
+        sortClauses.push(orderBy(sortingMethod.field, sortingMethod.direction));
+      }
+    }
+
     const queryAllItemsForUser = query(
       this.pantryCollection.withConverter(this.pantryItemConvertor),
-      where('userId', '==', userId)
+      ...whereClauses,
+      ...sortClauses
     );
 
     const querySnapshot = await getDocs(queryAllItemsForUser);
