@@ -5,8 +5,8 @@ import { getStorage } from '@firebase/storage';
 const firebaseConfig = {
   apiKey: process.env.API_KEY,
   authDomain: process.env.AUTH_DOMAIN,
-  projectId: process.env.PROJECT_ID,
-  storageBucket: process.env.STORAGE_BUCKET,
+  projectId: 'pantry-tracker-hamit',
+  storageBucket: 'pantry-tracker-hamit.appspot.com',
   messagingSenderId: process.env.MESSAGING_SENDER_ID,
   appId: process.env.APP_ID,
 };

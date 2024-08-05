@@ -22,7 +22,7 @@ export default function Header() {
             py: 2,
           }}
         >
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
             Pantry Tracker
           </Typography>
         </Toolbar>

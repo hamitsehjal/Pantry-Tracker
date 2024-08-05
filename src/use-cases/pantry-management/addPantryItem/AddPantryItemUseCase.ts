@@ -5,13 +5,13 @@ import AddPantryItemContract from '@/use-cases/pantry-management/addPantryItem/c
 import ValidatorService from '@/services/ValidatorService';
 
 export const categoryToImageMap = new Map<Category, string>([
-  [Category.Vegetable, 'shared-assets/images/category/vegetable_icon.png'],
-  [Category.Fruit, 'shared-assets/images/category/fruit_icon.png'],
-  [Category.Dairy, 'shared-assets/images/category/dairy_icon.png'],
-  [Category.Meat, 'shared-assets/images/category/meat_icon.png'],
-  [Category.Beverage, 'shared-assets/images/category/beverage_icon.png'],
-  [Category.Grain, 'shared-assets/images/category/grain_icon.png'],
-  [Category.Condiment, 'shared-assets/images/category/condiment_icon.png'],
+  [Category.Vegetable, 'shared-assets:images:category:vegetable_icon.png'],
+  [Category.Fruit, 'shared-assets:images:category:fruit_icon.png'],
+  [Category.Dairy, 'shared-assets:images:category:dairy_icon.png'],
+  [Category.Meat, 'shared-assets:images:category:meat_icon.png'],
+  [Category.Beverage, 'shared-assets:images:category:beverage_icon.png'],
+  [Category.Grain, 'shared-assets:images:category:grain_icon.png'],
+  [Category.Condiment, 'shared-assets:images:category:condiment_icon.png'],
 ]);
 export class AddPantryItemUseCase {
   // constructor
@@ -39,7 +39,6 @@ export class AddPantryItemUseCase {
     // set imagePath based on category
     const imagePath = categoryToImageMap.get(item.category as Category)!;
     const pantryItem = new PantryItem(
-      item.userId,
       item.name,
       item.quantity,
       item.unit as Unit,

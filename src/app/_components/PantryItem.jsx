@@ -1,20 +1,17 @@
 import { Card, CardContent, Typography, CardMedia } from '@mui/material';
 
 export default function PantryItem({ item, onDelete, onDetail }) {
+  const url = item.getImageURL();
+  const pantryItem = item.getPantryItem();
   return (
     <Card>
-      {/*<CardMedia*/}
-      {/*  component="img"*/}
-      {/*  height="140"*/}
-      {/*  image={`/images/${item.category.toLowerCase()}.jpg`}*/}
-      {/*  alt={item.category}*/}
-      {/*/>*/}
+      <CardMedia component="img" image={url} alt={pantryItem.category} />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          {item.name}
+          {pantryItem.name}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Quantity: {`${item.quantity} ${item.unit}`}
+          Quantity: {`${pantryItem.quantity} ${pantryItem.unit}`}
         </Typography>
       </CardContent>
     </Card>

@@ -1,21 +1,17 @@
-import { Category, PantryItem, Unit } from '@/models/PantryItem';
+import { Category, PantryItem } from '@/models/PantryItem';
 
 export interface GetPantryItemsOptions {
-  userId: string;
   category?: Category;
-  orderBy?: Array<{
-    field: 'name' | 'expirationDate' | 'purchaseDate' | 'quantity';
-    direction: 'asc' | 'desc';
-  }>;
+  sortBy?: 'name' | 'expirationDate' | 'purchaseDate' | 'quantity';
+  sortOrder?: 'asc' | 'desc';
 }
 
 export class PantryItemResponse extends PantryItem {
   constructor(
     private pantryItem: PantryItem,
-    private imageURL?: string
+    private imageURL: string
   ) {
     super(
-      pantryItem.userId,
       pantryItem.name,
       pantryItem.quantity,
       pantryItem.unit,
@@ -27,6 +23,13 @@ export class PantryItemResponse extends PantryItem {
       pantryItem.imagePath,
       pantryItem.notes
     );
+  }
+
+  public getPantryItem(): PantryItem {
+    return this.pantryItem;
+  }
+  public getImageURL(): string {
+    return this.imageURL;
   }
 }
 export interface GetPantryItemsResponse {

@@ -16,7 +16,6 @@ export enum Unit {
 }
 export class PantryItem {
   constructor(
-    public userId: string,
     public name: string,
     public quantity: number,
     public unit: Unit,

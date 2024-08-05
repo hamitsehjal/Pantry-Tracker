@@ -21,12 +21,9 @@ import { db } from '@/lib/firebase';
 import { Category, PantryItem } from '@/models/PantryItem';
 
 interface GetAllOptions {
-  userId: string;
   category?: Category;
-  orderBy?: Array<{
-    field: 'name' | 'expirationDate' | 'purchaseDate' | 'quantity';
-    direction: 'asc' | 'desc';
-  }>;
+  sortBy?: 'name' | 'expirationDate' | 'purchaseDate' | 'quantity';
+  sortOrder?: 'asc' | 'desc';
 }
 
 export class FirestoreService {
@@ -35,7 +32,6 @@ export class FirestoreService {
   private pantryItemConvertor: FirestoreDataConverter<PantryItem> = {
     toFirestore: (item: PantryItem) => {
       return {
-        userId: item.userId,
         name: item.name,
         quantity: item.quantity,
         unit: item.unit,
@@ -55,7 +51,6 @@ export class FirestoreService {
       const data = snapshot.data(options);
       {
         return new PantryItem(
-          data.userId,
           data.name,
           data.quantity,
           data.unit,
@@ -117,17 +112,20 @@ export class FirestoreService {
 
   // retrieve all pantry item for user
   async getAllItems(options: GetAllOptions): Promise<PantryItem[]> {
-    const whereClauses: QueryFieldFilterConstraint[] = [
-      where('userId', '==', options.userId),
-    ];
+    const whereClauses: QueryFieldFilterConstraint[] = [];
     const sortClauses: QueryOrderByConstraint[] = [];
     // Optional properties
+
+    // Filters
     options.category &&
       whereClauses.push(where('category', '==', options.category));
 
-    if (options.orderBy) {
-      for (const sortingMethod of options.orderBy) {
-        sortClauses.push(orderBy(sortingMethod.field, sortingMethod.direction));
+    // Sorting Options
+    if (options.sortBy) {
+      if (options.sortOrder) {
+        sortClauses.push(orderBy(options.sortBy, options.sortOrder));
+      } else {
+        sortClauses.push(orderBy(options.sortBy, 'asc'));
       }
     }
 

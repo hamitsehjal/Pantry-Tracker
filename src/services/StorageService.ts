@@ -34,8 +34,8 @@ export class StorageService {
     console.log('File Deleted Successfully');
   }
   // uploadPantryItemImage
-  async uploadPantryItemImage(file: File, userId: string): Promise<string> {
-    return await this.uploadFile(file, `users/${userId}/pantry/`);
+  async uploadPantryItemImage(file: File): Promise<string> {
+    return await this.uploadFile(file, `pantry/`);
   }
 
   // deletePantryItemImage
