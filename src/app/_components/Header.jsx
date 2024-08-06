@@ -9,8 +9,17 @@ import {
 import SortOrderButton from './SortOrderButton';
 import SortDropdown from './SortDropdown';
 import FilterDropdown from './FilterDropdown';
+import SearchBar from '@/app/_components/SearchBar';
+import { query } from '@firebase/firestore';
 
-export default function Header() {
+export default function Header({
+  category,
+  setCategory,
+  sortBy,
+  setSortBy,
+  search,
+  setSearch,
+}) {
   return (
     <AppBar position="static">
       <Container maxWidth="lg" sx={{ pb: 4 }}>
@@ -34,15 +43,10 @@ export default function Header() {
             justifyContent: 'center',
           }}
         >
-          <FilterDropdown />
-          <SortDropdown />
+          <FilterDropdown category={category} onCategoryChange={setCategory} />
+          <SortDropdown sortBy={sortBy} onSortByChange={setSortBy} />
           <SortOrderButton />
-          <TextField
-            variant="outlined"
-            size="small"
-            placeholder="Search"
-            sx={{ ml: 2, bgcolor: 'background.paper' }}
-          />
+          <SearchBar query={search} setQuery={setSearch} />
         </Box>
       </Container>
     </AppBar>
