@@ -26,15 +26,6 @@ export class AddPantryItemUseCase {
     // validate the data
     this.validate(item);
 
-    // Upload the image to Cloud Storage if exits
-    // let imagePath: string | undefined = undefined;
-    // if (item.itemImage) {
-    //   imagePath = await this.storageService.uploadPantryItemImage(
-    //     item.itemImage,
-    //     item.userId
-    //   );
-    // }
-
     // Save the item to database
     // set imagePath based on category
     const imagePath = categoryToImageMap.get(item.category as Category)!;
@@ -44,9 +35,6 @@ export class AddPantryItemUseCase {
       item.unit as Unit,
       item.category as Category,
       item.expirationDate,
-      item.purchaseDate,
-      new Date(),
-      new Date(),
       imagePath,
       item.notes
     );

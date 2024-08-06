@@ -21,9 +21,6 @@ export class PantryItem {
     public unit: Unit,
     public category: Category,
     public expirationDate: Date,
-    public purchaseDate: Date,
-    public createdAt: Date,
-    public updatedAt: Date,
     public imagePath: string,
     public notes?: string
   ) {}

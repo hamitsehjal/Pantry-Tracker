@@ -17,9 +17,6 @@ export class PantryItemResponse extends PantryItem {
       pantryItem.unit,
       pantryItem.category,
       pantryItem.expirationDate,
-      pantryItem.purchaseDate,
-      pantryItem.createdAt,
-      pantryItem.updatedAt,
       pantryItem.imagePath,
       pantryItem.notes
     );

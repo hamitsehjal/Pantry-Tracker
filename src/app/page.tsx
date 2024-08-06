@@ -1,5 +1,11 @@
 'use client';
-import { Container, Typography } from '@mui/material';
+import {
+  Box,
+  Container,
+  createTheme,
+  ThemeProvider,
+  Typography,
+} from '@mui/material';
 import Grid2 from '@mui/material/Unstable_Grid2';
 import PantryList from './_components/PantryList';
 import Header from './_components/Header';
@@ -34,24 +40,37 @@ export default function Home() {
 
   if (loading) return <Typography>Loading...</Typography>;
   if (error) return <Typography color="error">{error.message}</Typography>;
+  const darkTheme = createTheme({
+    palette: {
+      mode: 'dark',
+      background: {
+        default: '#000000',
+        paper: '#000000',
+      },
+    },
+  });
 
   return (
-    <Container>
-      <Grid2 container spacing={3}>
-        <Grid2 xs={12}>
-          <Header
-            category={selectedCategory}
-            setCategory={setCategory}
-            sortBy={selectedSortBy}
-            setSortBy={setSortBy}
-            search={query}
-            setSearch={setQuery}
-          />
-        </Grid2>
-        <Grid2 xs={12}>
-          <PantryList items={searchedItems} />
-        </Grid2>
-      </Grid2>
-    </Container>
+    <ThemeProvider theme={darkTheme}>
+      <Box sx={{ bgcolor: 'background.default', minHeight: '100vh' }}>
+        <Container>
+          <Grid2 container spacing={3}>
+            <Grid2 xs={12}>
+              <Header
+                category={selectedCategory}
+                setCategory={setCategory}
+                sortBy={selectedSortBy}
+                setSortBy={setSortBy}
+                search={query}
+                setSearch={setQuery}
+              />
+            </Grid2>
+            <Grid2 xs={12}>
+              <PantryList items={searchedItems} />
+            </Grid2>
+          </Grid2>
+        </Container>
+      </Box>
+    </ThemeProvider>
   );
 }

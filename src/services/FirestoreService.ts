@@ -37,9 +37,6 @@ export class FirestoreService {
         unit: item.unit,
         category: item.category,
         expirationDate: item.expirationDate,
-        purchaseDate: item.purchaseDate,
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
         imagePath: item.imagePath,
         notes: item.notes,
       };
@@ -56,9 +53,6 @@ export class FirestoreService {
           data.unit,
           data.category,
           data.expirationDate.toDate(),
-          data.purchaseDate.toDate(),
-          data.createdAt,
-          data.updatedAt,
           data.imagePath,
           data.notes
         );
@@ -71,8 +65,6 @@ export class FirestoreService {
       this.pantryCollection.withConverter(this.pantryItemConvertor),
       {
         ...item,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
       }
     );
     console.log(`New Item Added Successfully - {docRef.id}`);
